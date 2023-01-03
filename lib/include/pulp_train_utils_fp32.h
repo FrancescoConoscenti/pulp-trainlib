@@ -312,11 +312,6 @@ void set_to_value (void * void_args);
  */
 void mm_manager (void * void_args);
 
-/**
- * @brief tanh in parallel
- * @param args  struct defined with input, dim, output
- */
-void tanh_prll( void * args);
 
 /**
  * @brief updating the weights after calculation of gradient in parallel
