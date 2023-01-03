@@ -15,7 +15,7 @@
  */
 
 /**
- * Authors: Davide Nadalini, Leonardo Ravaglia
+ * Authors: Davide Nadalini, Leonardo Ravaglia, Francesco Conoscenti
 */ 
 
 #include "pmsis.h"
