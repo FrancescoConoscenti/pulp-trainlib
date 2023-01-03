@@ -105,6 +105,26 @@ void set_to_value (void * void_args)
 }
 
 
+
+
+void update_weight_prll(void * args){
+
+  struct update_weight_args* args_update_weight=(struct update_weight_args *) args;
+
+  const int blockSize=(args_update_weight->dim+NUM_CORES-1)/NUM_CORES;
+  const int start = pi_core_id()*blockSize;
+  const int stop = start + blockSize > args_update_weight->dim ? args_update_weight->dim : start+blockSize;
+
+  for(int i=start;i<stop;i++){
+
+    args_update_weight->accum[i]= args_update_weight->accum[i] + args_update_weight->grad[i] ;
+  }
+
+}
+
+
+
+
 /**
  * Choose the correct matmul for the chosen layer.
  */
@@ -561,3 +581,5 @@ void mm_manager (void * void_args)
     }
 
 }
+
+
