@@ -44,13 +44,13 @@ void pulp_RNN_fp32_fw_cl(
 // BACKWARD FUNCTIONS
 
 /**
- * @brief Backward pass function, which internally calls both weight gradient and input gradient calculation
- * @param input  input column vector for the linear layer (from forward perspective)
+ * @brief Backward pass function, which internally calculate both weight gradient and input gradient
+ * @param input  input column vector 
  * @param RICORS  num input values / in_size
  * @param coeffWx  weight input matrix 
  * @param coeffWa  weight state matrix
- * @param state  	vector of vectors of each hidden state
- * @param output  categorical output for the linear layer (from forward perspective)
+ * @param state  vector of vectors of each hidden state
+ * @param output  categorical output for the recurrent layer (last state)
  */
 void pulp_RNN_fp32_bw_cl(
 	struct blob * input, 
@@ -61,42 +61,3 @@ void pulp_RNN_fp32_bw_cl(
 	struct blob * output
 );
 
-/**
- * @brief Backward pass function which computes weight's gradient only
- * @param input  input column vector for the linear layer (from forward perspective)
- * @param RICORS  num input values / in_size
- * @param TimeStep  wich timeStep we are computing
- * @param coeffWx  weight input matrix 
- * @param coeffWa  weight state matrix
- * @param state  	vector of vectors of each hidden state
- * @param output  categorical output for the linear layer (from forward perspective)
- */
-void pulp_RNN_fp32_bw_param_grads_cl(
-	struct blob * input, 
-	int RICORS,
-	int TimeStep,
-	struct blob * coeffWx,
-	struct blob * coeffWa,
-	struct blob * state, 
-	struct blob * output
-);
-
-/**
- * @brief Backward pass function which computes input's gradient only
- * @param input  input column vector for the linear layer (from forward perspective)
- * @param RICORS  num input values / in_size
- * @param TimeStep  wich timeStep we are computing
- * @param coeffWx  weight input matrix 
- * @param coeffWa  weight state matrix
- * @param state  	vector of vectors of each hidden state
- * @param output  categorical output for the linear layer (from forward perspective)
- */
-void pulp_RNN_fp32_bw_state_grads_cl(
-	struct blob * input, 
-	int RICORS,
-	int TimeStep,
-	struct blob * coeffWx,
-	struct blob * coeffWa,
-	struct blob * state, 
-	struct blob * output
-);
