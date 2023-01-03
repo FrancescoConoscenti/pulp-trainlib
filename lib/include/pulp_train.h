@@ -31,6 +31,7 @@
 #include "pulp_matmul_fp32.h"
 #include "pulp_im2col_fp32.h"
 #include "pulp_linear_fp32.h"
+#include "pulp_RNN_fp32.h"
 #include "pulp_conv2d_fp32.h"
 #include "pulp_conv_pw_fp32.h"
 #include "pulp_conv_dw_fp32.h"
