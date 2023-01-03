@@ -65,3 +65,11 @@ void pulp_softmax_fp32_bw_cl(
     struct blob * input,
     struct blob * output
 );
+
+/**
+ * @brief Forward pass function.
+ * @param pointer to a tanh_args struct
+*/
+void tanh_prll(
+    void * args
+);
