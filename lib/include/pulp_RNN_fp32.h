@@ -16,7 +16,7 @@
 
 
 /**
- * Linear layer training functions, grouped into FW and BW
+ * Recurrent layer training functions, grouped into FW and BW
 */
 
 
@@ -28,7 +28,7 @@
  * @param RICORS  num input values / in_size
  * @param coeffWx  weight input matrix 
  * @param coeffWa  weight state matrix
- * @param state  	vector of vectors of each hidden state
+ * @param state  vector of vectors of each hidden state
  * @param output  categorical output for the linear layer
  */
 void pulp_RNN_fp32_fw_cl(
