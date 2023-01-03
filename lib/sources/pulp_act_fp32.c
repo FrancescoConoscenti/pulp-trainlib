@@ -75,3 +75,16 @@ void pulp_softmax_fp32_bw_cl(struct blob * input, struct blob * output){
     printf("[pulp_softmax_fp32_bw_cl] INVALID FORMULA, FIX!!");
   }
 }
+
+void tanh_prll(void * args){
+
+  struct tanh_args* args_tanh=(struct tanh_args *) args;
+
+  const int blockSize=(args_tanh->dim+NUM_CORES-1)/NUM_CORES;
+  const int start = pi_core_id()*blockSize;
+  const int stop = start + blockSize > args_tanh->dim ? args_tanh->dim : start+blockSize;
+
+  for(int i=start;i<stop;i++){
+    args_tanh->output[i]=fastertanh(args_tanh->input[i]);
+  }
+}
