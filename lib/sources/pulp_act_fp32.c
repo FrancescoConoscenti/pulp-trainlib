@@ -15,7 +15,7 @@
  */
 
 /**
- * Authors: Davide Nadalini, Leonardo Ravaglia
+ * Authors: Davide Nadalini, Leonardo Ravaglia, Francesco Conoscenti
 */ 
 
 #include "pulp_train_utils_fp32.h"
@@ -87,4 +87,10 @@ void tanh_prll(void * args){
   for(int i=start;i<stop;i++){
     args_tanh->output[i]=fastertanh(args_tanh->input[i]);
   }
+}
+
+static inline float
+fastertanh (float p)
+{
+  return -1.0f + 2.0f / (1.0f + fasterexp (-2.0f * p));
 }
