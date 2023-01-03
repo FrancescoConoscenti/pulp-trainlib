@@ -5,11 +5,9 @@
  * This software may be modified and distributed under the terms
  * of the BSD license.  See the LICENSE file for details.
  *
- * Authors: Manuele Rusci, UniBO (manuele.rusci@unibo.it)
- *          Leonardo Ravaglia, UniBO (leonardo.ravaglia2@unibo.it)
+ * Authors: Francesco Conoscenti (francesco.conoscenti@studio.unibo.it)
  */
 #include "pmsis.h"
-#include "math.h"
 #include "fasthyperbolic.h"
 #include "/home/pulp-user/work/APAI-LAB01-PULP_Embedded/pulp-trainlib-pulp-trainlib/tests/test_RNN_TESTING/net.h"
 #include "/home/pulp-user/work/APAI-LAB01-PULP_Embedded/pulp-trainlib-pulp-trainlib/lib/include/pulp_matmul_fp32.h"
