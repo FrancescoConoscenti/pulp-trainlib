@@ -39,27 +39,6 @@ PI_L1 float l0_out[Tout_l0];
 PI_L1 int Ric=RICORS;
 #endif
 
-
-#ifdef BACKWARD_ERROR
-PI_L1 float l0_state_diff [Tout_l0];
-PI_L1 float l0_ker_in[Tin_l0*Tout_l0];
-PI_L1 float l0_ker_h[Tout_l0*Tout_l0]; 
-PI_L1 float l0_out_diff [Tout_l0];
-PI_L1 float l0_out [Tout_l0];
-PI_L1 int Ric=RICORS;
-PI_L1 float vector4check[Tout_l0];
-#endif
-
-#ifdef BACKWARD_GRAD
-PI_L1 float l0_in[Tin_l0*RICORS];
-PI_L1 float l0_ker_in_diff[Tker_l0];
-PI_L1 float l0_ker_h_diff[Tout_l0*Tout_l0];
-PI_L1 float l0_state[Tout_l0*(RICORS+1)];
-PI_L1 float l0_out_diff [Tout_l0];
-PI_L1 float l0_out [Tout_l0];
-PI_L1 int Ric=RICORS;
-#endif
-
 #ifdef BACKWARD
 PI_L1 float l0_in[Tin_l0*RICORS];
 PI_L1 float l0_ker_in[Tin_l0*Tout_l0];
@@ -131,139 +110,12 @@ static inline void compute_memory_occupation(){
 #endif
 
 
-#ifdef BACKWARD_ERROR
-static inline void tensor_init() 
-{
-  for (int i=0; i<Tout_l0; i++)        l0_state_diff[i] = 0.0f;
-  for (int i=0; i<Tin_l0*Tout_l0; i++)       l0_ker_in[i] = L0_WEIGHTS_params_INPUT[i];
-  for (int i=0; i<Tout_l0*Tout_l0; i++)       l0_ker_h[i] = L0_WEIGHTS_params_HIDDEN[i];
-  for (int i=0; i<Tout_l0; i++)       l0_out[i] = L0_OUT_FW[i];
-  for (int i=0; i<Tout_l0; i++)       l0_out_diff[i] = L0_OUT_GRAD[i]; 
-}
-
-static inline void connect_blobs() 
-{
-  layer0_state.diff = l0_state_diff;
-  layer0_state.dim = Tout_l0;
-
-  layer0_wgt_in.data = l0_ker_in;
-  layer0_wgt_in.dim = Tker_l0;
-
-  layer0_wgt_h.data = l0_ker_h;
-  layer0_wgt_h.dim = Tout_l0*Tout_l0;
-
-  layer0_out.data = l0_out;
-  layer0_out.diff = l0_out_diff;
-  layer0_out.dim = Tout_l0;  
-}
-
-static inline void compute_memory_occupation(){
-  // Input
-  L1_memocc_bytes += Tin_l0*RICORS*sizeof(float);
-  // Kernel input
-  L1_memocc_bytes += Tker_l0*sizeof(float); 
-  // Kernel state
-  L1_memocc_bytes += Tout_l0*Tout_l0*sizeof(float);
-  //hidden states grad
-  L1_memocc_bytes += Tout_l0*(RICORS+1)*sizeof(float);
-  // Output grad
-  L1_memocc_bytes += Tout_l0*sizeof(float);
-
-  // Input data
-  L2_memocc_bytes += L0_IN_CH * RICORS *sizeof(float);
-  // Weights input
-  L2_memocc_bytes += L0_WEIGHTS_input*sizeof(float);
-  // Weights state
-  L2_memocc_bytes += L0_WEIGHTS_hidden*sizeof(float);
-  // States
-  L2_memocc_bytes += L0_OUT_CH*(RICORS+1)*sizeof(float);
-  // Output
-  L2_memocc_bytes += L0_OUT_CH*sizeof(float);
-  // Output gradient
-  L2_memocc_bytes += L0_OUT_CH*sizeof(float);
-  // Weight input gradient
-  L2_memocc_bytes += L0_WEIGHTS_input*sizeof(float);
-  // Weight state gradient
-  L2_memocc_bytes += L0_WEIGHTS_hidden*sizeof(float);
-  // States gradient
-  L2_memocc_bytes += L0_OUT_CH*(RICORS+1)*sizeof(float);
-  // Input gradient
-  L2_memocc_bytes += L0_IN_CH*sizeof(float);
-}
-#endif
-
-
-#ifdef BACKWARD_GRAD
-static inline void tensor_init() 
-{
-  for (int i=0; i<Tin_l0*RICORS; i++)        l0_in[i] = INPUT_VECTOR[i];
-  for (int i=0; i<Tker_l0; i++)       l0_ker_in_diff[i] = 0.0f;           // inizializzo a zero perche dopo li sovrascrivo con i riusultati della differenza dei pesi nella funzione 
-  for (int i=0; i<Tout_l0*Tout_l0; i++)       l0_ker_h_diff[i] = 0.0f;
-  for (int i=0; i<Tout_l0*(RICORS+1); i++)       l0_state[i] = L0_HIDDEN_STATE[i];
-  for (int i=0; i<Tout_l0; i++)       l0_out_diff[i] = L0_OUT_GRAD[i];  
-  for (int i=0; i<Tout_l0; i++)       l0_out[i] = L0_OUT_FW[i]; 
-}
-
-static inline void connect_blobs() 
-{
-  layer0_in.data = l0_in;
-  layer0_in.dim = Tin_l0;
-
-  layer0_wgt_in.diff = l0_ker_in_diff;
-  layer0_wgt_in.dim = Tker_l0;
-
-  layer0_wgt_h.diff = l0_ker_h_diff;
-  layer0_wgt_h.dim = Tout_l0*Tout_l0;
-
-  layer0_state.data = l0_state;
-  layer0_state.dim = Tout_l0*(RICORS+1);
-
-  layer0_out.diff = l0_out_diff;
-  layer0_out.dim = Tout_l0;  
-  layer0_out.data = l0_out;
-}
-
-static inline void compute_memory_occupation(){
-  // Input
-  L1_memocc_bytes += Tin_l0*RICORS*sizeof(float);
-  // Kernel input grad
-  L1_memocc_bytes += Tker_l0*sizeof(float); 
-  // Kernel state grad
-  L1_memocc_bytes += Tout_l0*Tout_l0*sizeof(float);
-  //hidden states 
-  L1_memocc_bytes += Tout_l0*(RICORS+1)*sizeof(float);
-  // Output grad
-  L1_memocc_bytes += Tout_l0*sizeof(float);
-
-  // Input data
-  L2_memocc_bytes += L0_IN_CH * RICORS *sizeof(float);
-  // Weights input
-  L2_memocc_bytes += L0_WEIGHTS_input*sizeof(float);
-  // Weights state
-  L2_memocc_bytes += L0_WEIGHTS_hidden*sizeof(float);
-  // States
-  L2_memocc_bytes += L0_OUT_CH*(RICORS+1)*sizeof(float);
-  // Output
-  L2_memocc_bytes += L0_OUT_CH*sizeof(float);
-  // Output gradient
-  L2_memocc_bytes += L0_OUT_CH*sizeof(float);
-  // Weight input gradient
-  L2_memocc_bytes += L0_WEIGHTS_input*sizeof(float);
-  // Weight state gradient
-  L2_memocc_bytes += L0_WEIGHTS_hidden*sizeof(float);
-  // States gradient
-  L2_memocc_bytes += L0_OUT_CH*(RICORS+1)*sizeof(float);
-  // Input gradient
-  L2_memocc_bytes += L0_IN_CH*sizeof(float);
-}
-#endif
-
 #ifdef BACKWARD
 static inline void tensor_init() 
 {
   //backward grad
   for (int i=0; i<Tin_l0*RICORS; i++)        l0_in[i] = INPUT_VECTOR[i];
-  for (int i=0; i<Tker_l0; i++)       l0_ker_in_diff[i] = 0.0f;           // inizializzo a zero perche dopo li sovrascrivo con i riusultati della differenza dei pesi nella funzione 
+  for (int i=0; i<Tker_l0; i++)       l0_ker_in_diff[i] = 0.0f;           //initialization to zero, then it is overwritten the result in the function
   for (int i=0; i<Tout_l0*Tout_l0; i++)       l0_ker_h_diff[i] = 0.0f;
   for (int i=0; i<Tout_l0*(RICORS+1); i++)       l0_state[i] = L0_HIDDEN_STATE[i];
 
@@ -437,14 +289,6 @@ static inline void train(){
   START_STATS();
   #endif
 
-  #ifdef BACKWARD_ERROR
-  pulp_RNN_fp32_bw_state_grads_cl(&layer0_in, Ric, Ric, &layer0_wgt_in, &layer0_wgt_h, &layer0_state, &layer0_out); // timestep=Ric perchè calcolo gradiente dell'ultimo timestep
-  #endif
-
-  #ifdef BACKWARD_GRAD
-  pulp_RNN_fp32_bw_param_grads_cl(&layer0_in, Ric, Ric, &layer0_wgt_in, &layer0_wgt_h, &layer0_state, &layer0_out);
-  #endif
-
   #ifdef BACKWARD
   pulp_RNN_fp32_bw_cl(&layer0_in, Ric, &layer0_wgt_in, &layer0_wgt_h, &layer0_state, &layer0_out);
   #endif
@@ -476,37 +320,18 @@ static inline void train(){
   check_tensor(l0_out, L0_OUT_FW, Tout_l0);
   #endif
 
-  #ifdef BACKWARD_ERROR
-  printf("STATE GRADIENT CHECK: \n");
-
-  for(int i=0;i<Tout_l0;i++)
-    vector4check[i]=l0_state_diff[RICORS*Tout_l0+i];
-
-  compare_tensors(vector4check, L0_STATE_GRAD, Tout_l0);     //qui fa il confronto tra risultato GM e della libreria
-  check_tensor(vector4check, L0_STATE_GRAD, Tout_l0);        // L0_STATE_GRAD che sarebbe il grad_over_time del modello in numphy
-  #endif                     
-
-  #ifdef BACKWARD_GRAD
-  printf("WEIGHTS GRADIENT CHECK: \n");
-  compare_tensors(l0_ker_in_diff, L0_WEIGHT_params_INPUT_GRAD, Tker_l0);     
-  check_tensor(l0_ker_in_diff, L0_WEIGHT_params_INPUT_GRAD, Tker_l0);
-
-  compare_tensors(l0_ker_h_diff, L0_WEIGHT_params_HIDDEN_GRAD, Tout_l0*Tout_l0);     
-  check_tensor(l0_ker_h_diff, L0_WEIGHT_params_HIDDEN_GRAD, Tout_l0*Tout_l0);
-  #endif   
-
 
   #ifdef BACKWARD
   printf("FINAL WEIGHTS GRADIENT CHECK: \n");
-  compare_tensors(l0_ker_in_diff, L0_WEIGHT_params_INPUT_GRAD_FINAL, Tker_l0);     // non devo confrontarli con quelli ma con quelli finali dopo tutto unroll
+  compare_tensors(l0_ker_in_diff, L0_WEIGHT_params_INPUT_GRAD_FINAL, Tker_l0);  
   check_tensor(l0_ker_in_diff, L0_WEIGHT_params_INPUT_GRAD_FINAL, Tker_l0);
 
   compare_tensors(l0_ker_h_diff, L0_WEIGHT_params_HIDDEN_GRAD_FINAL, Tout_l0*Tout_l0);     
   check_tensor(l0_ker_h_diff, L0_WEIGHT_params_HIDDEN_GRAD_FINAL, Tout_l0*Tout_l0);
 
   printf("FINAL STATE GRADIENT CHECK: \n");
-  compare_tensors(&l0_state_diff[Tout_l0], L0_STATE_GRAD_FINAL, Tout_l0);     //qui fa il confronto tra risultato GM e della libreria
-  check_tensor(&l0_state_diff[Tout_l0], L0_STATE_GRAD_FINAL, Tout_l0);        // L0_STATE_GRAD che sarebbe il grad_over_time del modello in numphy
+  compare_tensors(&l0_state_diff[Tout_l0], L0_STATE_GRAD_FINAL, Tout_l0);     //ccomparing GM result and actual result
+  check_tensor(&l0_state_diff[Tout_l0], L0_STATE_GRAD_FINAL, Tout_l0);        // L0_STATE_GRAD is "grad_over_time" of numphy model
   #endif 
 
 
