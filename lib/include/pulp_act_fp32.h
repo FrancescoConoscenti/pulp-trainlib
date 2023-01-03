@@ -67,9 +67,18 @@ void pulp_softmax_fp32_bw_cl(
 );
 
 /**
- * @brief Forward pass function.
+ * @brief Forward pass function that parallelize the fastertanh function (following).
  * @param pointer to a tanh_args struct
 */
 void tanh_prll(
     void * args
+);
+
+
+/**
+ * @brief Forward pass function.
+ * @param float value
+*/
+fastertanh (
+    float p
 );
