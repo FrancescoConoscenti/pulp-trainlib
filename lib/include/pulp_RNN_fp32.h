@@ -19,6 +19,9 @@
  * Recurrent layer training functions, grouped into FW and BW
 */
 
+/**
+ * Authors: Francesco Conoscenti
+*/ 
 
 // FORWARD FUNCTIONS
 
