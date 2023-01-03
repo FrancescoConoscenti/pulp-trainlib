@@ -247,6 +247,33 @@ struct mm_manager_args {
 
 
 /**
+ * @brief Arguments for tanh in parallel output=tanh(input)
+ * @param input    pointer to input vector
+ * @param dim    dimension vector
+ * @param output    pointer to output vector
+*/
+struct tanh_args{
+  float* input;
+  int dim;
+  float* output;
+};
+
+
+/**
+ * @brief Arguments weight updates output=output + gradient
+ * @param accum    pointer to weight gradient accumulators
+ * @param grad    pointer to weight gradient of the current timestep
+ * @param dim       dimension vector
+*/
+struct update_weight_args{
+  float* accum;
+  float* grad;
+  int dim;
+};
+
+
+
+/**
  * =====> FUNCTIONS <=====
  */
 
@@ -284,3 +311,16 @@ void set_to_value (void * void_args);
  * @param (void *) (struct mm_manager_args void_args)
  */
 void mm_manager (void * void_args);
+
+/**
+ * @brief tanh in parallel
+ * @param args  struct defined with input, dim, output
+ */
+void tanh_prll( void * args);
+
+/**
+ * @brief updating the weights after calculation of gradient in parallel
+ * @param args  struct defined with accum, grad, dim, output
+ */
+void update_weight_prll( void * args);
+
