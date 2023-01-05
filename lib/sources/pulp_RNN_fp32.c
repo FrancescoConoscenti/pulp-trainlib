@@ -7,11 +7,13 @@
  *
  * Authors: Francesco Conoscenti (francesco.conoscenti@studio.unibo.it)
  */
-#include "pmsis.h"
-#include "fasthyperbolic.h"
-#include "/home/pulp-user/work/APAI-LAB01-PULP_Embedded/pulp-trainlib-pulp-trainlib/tests/test_RNN_TESTING/net.h"
-#include "/home/pulp-user/work/APAI-LAB01-PULP_Embedded/pulp-trainlib-pulp-trainlib/lib/include/pulp_matmul_fp32.h"
-#include "/home/pulp-user/work/APAI-LAB01-PULP_Embedded/pulp-trainlib-pulp-trainlib/lib/include/pulp_train_utils_fp32.h"
+
+
+#include "lib/include/fastapprox/fasthyperbolic.h"
+
+#include "pulp_RNN_fp32.h"
+#include "pulp_matmul_fp32.h"
+#include "pulp_train_utils_fp32.h"
 
 
 //FORWARD
@@ -32,7 +34,7 @@ void pulp_RNN_fp32_fw_cl(struct blob * input, int RICORS,  struct blob * coeffWx
 
   for(int i=0;i<RICORS;i++){
 
-    // every cycle it is a different input vector, a column of the input matrix
+    // every cycle it is a different input vector, a different column of the input matrix
     inputDataN=&inputData[i*(input->dim)];
 
     //matmul setup 1
@@ -129,9 +131,9 @@ void pulp_RNN_fp32_fw_cl(struct blob * input, int RICORS,  struct blob * coeffWx
     pi_cl_team_fork(NUM_CORES, tanh_prll, &tanh_arg);
 
   
-
   }
 
+  
   //use the output of the last ricorsion as a final output
   for (int j=0; j<output->dim; j++){
     outData[j]=prev_state[((RICORS)*output->dim)+j];
